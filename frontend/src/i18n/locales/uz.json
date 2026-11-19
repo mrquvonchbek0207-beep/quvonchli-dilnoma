@@ -162,6 +162,11 @@
     "openEnvelope": "Muhrlangan konvertni ochish",
     "tapToOpen": "Ochish uchun bosing",
     "closeEnvelope": "Konvertni yopish",
+    "copyLink": "Havolani nusxalash",
+    "copied": "Havola nusxalandi",
+    "copyError": "Havolani nusxalab bo‘lmadi. Qayta urinib ko‘ring.",
+    "shareTelegram": "Telegram orqali ulashish",
+    "telegramMessage": "Siz uchun samimiy tabriknoma",
     "notFound": "Tabriknoma topilmadi",
     "notFoundDescription": "Havola muddati tugagan yoki tabriknoma endi mavjud emas.",
     "home": "Bosh sahifa"

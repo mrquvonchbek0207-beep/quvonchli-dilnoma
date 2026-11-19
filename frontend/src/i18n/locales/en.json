@@ -162,6 +162,11 @@
     "openEnvelope": "Open the sealed envelope",
     "tapToOpen": "Tap to open",
     "closeEnvelope": "Close envelope",
+    "copyLink": "Copy link",
+    "copied": "Link copied",
+    "copyError": "Couldn’t copy the link. Please try again.",
+    "shareTelegram": "Share to Telegram",
+    "telegramMessage": "A heartfelt greeting card for you",
     "notFound": "This card could not be found",
     "notFoundDescription": "The link may have expired or the card is no longer available.",
     "home": "Go to home"

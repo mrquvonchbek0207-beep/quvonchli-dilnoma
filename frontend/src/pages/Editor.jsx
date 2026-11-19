@@ -332,6 +332,7 @@ function Editor() {
             senderName={senderName}
             recipientName={recipientName}
             message={message}
+            themeMode={theme}
           />
         </aside>
       </div>

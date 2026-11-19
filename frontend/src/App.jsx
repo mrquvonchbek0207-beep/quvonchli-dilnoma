@@ -5,6 +5,8 @@ import { AuthProvider } from './context/AuthContext.jsx'
 import { ThemeProvider } from './context/ThemeContext.jsx'
 import Landing from './pages/Landing.jsx'
 import Login from './pages/Login.jsx'
+import Register from './pages/Register.jsx'
+import ServerWakingNotice from './components/ServerWakingNotice.jsx'
 import './i18n/i18n.js'
 
 const Dashboard = lazy(() => import('./pages/Dashboard.jsx'))
@@ -33,6 +35,7 @@ function App() {
         <BrowserRouter>
           <div className="min-h-screen bg-rose-50 text-slate-800 transition-colors dark:bg-slate-950 dark:text-slate-100">
             <Navbar />
+            <ServerWakingNotice />
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route
@@ -81,6 +84,7 @@ function App() {
                 }
               />
               <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
               <Route
                 path="/admin/login"
                 element={

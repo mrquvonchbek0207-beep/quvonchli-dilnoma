@@ -13,6 +13,20 @@
     "mainNavigation": "Asosiy navigatsiya",
     "welcomeUser": "Salom, {{name}}"
   },
+  "common": {
+    "serverWaking": "Server uyg'onmoqda, iltimos 30-40 soniya kuting..."
+  },
+  "register": {
+    "eyebrow": "Quvonchli Dilnomaga qo‘shiling",
+    "title": "Hisob yarating",
+    "description": "Samimiy tabriknomalar yaratish va ulashish uchun ro‘yxatdan o‘ting.",
+    "fullName": "To‘liq ism",
+    "submit": "Hisob yaratish",
+    "submitting": "Hisob yaratilmoqda…",
+    "error": "Hisob yaratib yoki tizimga kirib bo‘lmadi. Ma’lumotlarni tekshirib, birozdan so‘ng qayta urinib ko‘ring.",
+    "hasAccount": "Hisobingiz bormi?",
+    "signIn": "Kirish"
+  },
   "admin": {
     "eyebrow": "Boshqaruv paneli",
     "title": "Admin paneli",
@@ -171,6 +185,7 @@
     }
   },
   "login": {
+    "accountNavigation": "Hisob navigatsiyasi",
     "eyebrow": "Qaytganingizdan xursandmiz",
     "title": "Hisobingizga kiring",
     "email": "Elektron pochta",
@@ -178,6 +193,8 @@
     "submit": "Kirish",
     "submitting": "Kirilmoqda…",
     "error": "Kirish amalga oshmadi. Ma’lumotlarni tekshirib, qayta urinib ko‘ring.",
+    "registerPrompt": "Quvonchli Dilnomada yangimisiz?",
+    "registerLink": "Ro‘yxatdan o‘tish",
     "backHome": "Bosh sahifaga qaytish"
   }
 }

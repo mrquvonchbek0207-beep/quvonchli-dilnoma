@@ -36,7 +36,14 @@ class UserResponse(ORMModel):
     email: EmailStr
     lang: Language
     theme: Theme
+    is_admin: bool
     created_at: datetime
+
+
+class UserRegistrationResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: UserResponse
 
 
 UserRead = UserResponse

@@ -3,6 +3,7 @@ import { Heart, LoaderCircle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/useAuth.js'
+import { getApiErrorMessage } from '../utils/apiError.js'
 
 function Login() {
   const { t } = useTranslation()
@@ -11,17 +12,17 @@ function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [hasError, setHasError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
   async function handleSubmit(event) {
     event.preventDefault()
     setIsSubmitting(true)
-    setHasError(false)
+    setErrorMessage('')
     try {
       await login(email, password)
       navigate('/')
-    } catch {
-      setHasError(true)
+    } catch (error) {
+      setErrorMessage(getApiErrorMessage(error, t('login.error')))
     } finally {
       setIsSubmitting(false)
     }
@@ -35,6 +36,25 @@ function Login() {
         </div>
         <p className="text-sm font-semibold text-rose-600 dark:text-rose-300">{t('login.eyebrow')}</p>
         <h1 className="mt-2 font-display text-3xl text-slate-900 dark:text-white">{t('login.title')}</h1>
+
+        <nav
+          aria-label={t('login.accountNavigation')}
+          className="mt-6 grid grid-cols-2 rounded-xl bg-slate-100 p-1 dark:bg-slate-800"
+        >
+          <Link
+            to="/login"
+            aria-current="page"
+            className="rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-rose-700 shadow-sm dark:bg-slate-700 dark:text-rose-200"
+          >
+            {t('login.submit')}
+          </Link>
+          <Link
+            to="/register"
+            className="rounded-lg px-3 py-2 text-center text-sm font-medium text-slate-600 transition hover:text-rose-700 dark:text-slate-300 dark:hover:text-rose-200"
+          >
+            {t('login.registerLink')}
+          </Link>
+        </nav>
 
         <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
           <div>
@@ -68,9 +88,9 @@ function Login() {
             />
           </div>
 
-          {hasError ? (
+          {errorMessage ? (
             <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-950/50 dark:text-red-200">
-              {t('login.error')}
+              {errorMessage}
             </p>
           ) : null}
 
@@ -84,9 +104,11 @@ function Login() {
           </button>
         </form>
 
-        <Link to="/" className="mt-6 inline-flex text-sm font-medium text-slate-500 transition hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-300">
-          {t('login.backHome')}
-        </Link>
+        <div className="mt-6 flex justify-end text-sm">
+          <Link to="/" className="font-medium text-slate-500 transition hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-300">
+            {t('login.backHome')}
+          </Link>
+        </div>
       </section>
     </main>
   )

@@ -6,7 +6,7 @@ import { useAuth } from '../../context/useAuth.js'
 
 function AdminLogin() {
   const { t } = useTranslation()
-  const { isAuthenticated, isLoading, login } = useAuth()
+  const { isAuthenticated, isLoading, login, user } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
@@ -15,7 +15,7 @@ function AdminLogin() {
   const [hasError, setHasError] = useState(false)
 
   if (isAuthenticated) {
-    return <Navigate to="/admin" replace />
+    return <Navigate to={user?.is_admin ? '/admin' : '/'} replace />
   }
 
   async function handleSubmit(event) {

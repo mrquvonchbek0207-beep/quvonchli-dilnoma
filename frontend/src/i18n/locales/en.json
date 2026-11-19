@@ -13,6 +13,20 @@
     "mainNavigation": "Main navigation",
     "welcomeUser": "Hello, {{name}}"
   },
+  "common": {
+    "serverWaking": "The server is waking up. Please wait 30–40 seconds…"
+  },
+  "register": {
+    "eyebrow": "Join Joyful Dilnoma",
+    "title": "Create your account",
+    "description": "Sign up to create and share heartfelt cards.",
+    "fullName": "Full name",
+    "submit": "Create account",
+    "submitting": "Creating account…",
+    "error": "We couldn’t create your account or sign you in. Check your details or try again shortly.",
+    "hasAccount": "Already have an account?",
+    "signIn": "Sign in"
+  },
   "admin": {
     "eyebrow": "Workspace management",
     "title": "Admin panel",
@@ -171,6 +185,7 @@
     }
   },
   "login": {
+    "accountNavigation": "Account navigation",
     "eyebrow": "Welcome back",
     "title": "Sign in to your account",
     "email": "Email address",
@@ -178,6 +193,8 @@
     "submit": "Sign in",
     "submitting": "Signing in…",
     "error": "We couldn’t sign you in. Check your details and try again.",
+    "registerPrompt": "New to Joyful Dilnoma?",
+    "registerLink": "Register",
     "backHome": "Back to home"
   }
 }

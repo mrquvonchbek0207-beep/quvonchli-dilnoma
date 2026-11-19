@@ -76,6 +76,20 @@ export function AuthProvider({ children }) {
     return fetchCurrentUser()
   }, [fetchCurrentUser])
 
+  const register = useCallback(async (fullName, email, password) => {
+    const response = await api.post('/api/users/register', {
+      full_name: fullName,
+      email,
+      password,
+    })
+    const { access_token: accessToken, user: registeredUser } = response.data
+    window.localStorage.setItem(TOKEN_STORAGE_KEY, accessToken)
+    setToken(accessToken)
+    setUser(registeredUser)
+    setIsLoading(false)
+    return registeredUser
+  }, [])
+
   const value = useMemo(
     () => ({
       user,
@@ -83,10 +97,11 @@ export function AuthProvider({ children }) {
       isLoading,
       isAuthenticated: Boolean(user),
       login,
+      register,
       logout,
       fetchCurrentUser,
     }),
-    [user, token, isLoading, login, logout, fetchCurrentUser],
+    [user, token, isLoading, login, register, logout, fetchCurrentUser],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

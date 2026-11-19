@@ -30,6 +30,10 @@ function AdminLayout() {
     return <Navigate to="/admin/login" replace state={{ from: location }} />
   }
 
+  if (!user?.is_admin) {
+    return <Navigate to="/" replace />
+  }
+
   function handleLogout() {
     logout()
     navigate('/admin/login', { replace: true })

@@ -1,18 +1,66 @@
 import axios from 'axios'
 
 export const TOKEN_STORAGE_KEY = 'joyful-dilnoma-token'
+export const API_SLOW_REQUEST_EVENT = 'joyful-dilnoma:slow-request'
 const LOCAL_TEMPLATES_KEY = 'joyful-dilnoma-admin-templates'
 const LOCAL_QUOTES_KEY = 'joyful-dilnoma-admin-quotes'
+const SLOW_REQUEST_DELAY_MS = 4000
+const activeSlowRequestIds = new Set()
+let nextRequestId = 0
 export const API_BASE_URL =
   import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 15000,
+  timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
   },
 })
+
+function notifySlowRequestChange() {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(
+      new CustomEvent(API_SLOW_REQUEST_EVENT, {
+        detail: { activeCount: activeSlowRequestIds.size },
+      }),
+    )
+  }
+}
+
+function finishRequest(config) {
+  if (!config) return
+
+  if (typeof window !== 'undefined') {
+    window.clearTimeout(config.__joyfulSlowRequestTimer)
+  }
+  if (activeSlowRequestIds.delete(config.__joyfulSlowRequestId)) {
+    notifySlowRequestChange()
+  }
+}
+
+api.interceptors.request.use((config) => {
+  if (typeof window !== 'undefined') {
+    const requestId = ++nextRequestId
+    config.__joyfulSlowRequestId = requestId
+    config.__joyfulSlowRequestTimer = window.setTimeout(() => {
+      activeSlowRequestIds.add(requestId)
+      notifySlowRequestChange()
+    }, SLOW_REQUEST_DELAY_MS)
+  }
+  return config
+})
+
+api.interceptors.response.use(
+  (response) => {
+    finishRequest(response.config)
+    return response
+  },
+  (error) => {
+    finishRequest(error.config)
+    return Promise.reject(error)
+  },
+)
 
 export async function fetchCategories() {
   const response = await api.get('/api/categories')

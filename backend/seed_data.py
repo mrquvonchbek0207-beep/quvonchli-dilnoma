@@ -1,7 +1,7 @@
-from sqlalchemy import delete, select
+from sqlalchemy import select
 
 from app.database import Base, SessionLocal, engine
-from app.models import Card, Category, Quote, Template
+from app.models import Category, Quote, Template
 
 
 CATEGORIES = [
@@ -254,36 +254,58 @@ def _validate_seed_content() -> None:
         raise ValueError("Each category must define between three and five quotes.")
 
 
-def seed_data() -> None:
+def seed_data() -> dict[str, int]:
     _validate_seed_content()
     Base.metadata.create_all(bind=engine)
 
+    added_categories = 0
+    added_templates = 0
+    added_quotes = 0
     with SessionLocal.begin() as session:
-        existing_card_count = session.query(Card.id).count()
-        if existing_card_count:
-            raise RuntimeError(
-                "Refusing to replace seeded templates because saved cards exist. "
-                "Back up or migrate cards before reseeding."
-            )
-
-        session.execute(delete(Quote))
-        session.execute(delete(Template))
-        session.execute(delete(Category))
-
-        categories = [Category(**values) for values in CATEGORIES]
-        session.add_all(categories)
+        categories_by_slug = {
+            category.slug: category
+            for category in session.scalars(select(Category)).all()
+        }
+        for values in CATEGORIES:
+            if values["slug"] not in categories_by_slug:
+                category = Category(**values)
+                session.add(category)
+                categories_by_slug[category.slug] = category
+                added_categories += 1
         session.flush()
-        categories_by_slug = {category.slug: category for category in categories}
+
+        category_ids = {
+            category.slug: category.id
+            for category in categories_by_slug.values()
+        }
+        existing_templates = {
+            (template.category_id, template.name_uz, template.name_ru, template.name_en)
+            for template in session.scalars(select(Template)).all()
+        }
+        existing_quotes = {
+            (
+                quote.category_id,
+                quote.relation,
+                quote.mood,
+                quote.text_uz,
+                quote.text_ru,
+                quote.text_en,
+            )
+            for quote in session.scalars(select(Quote)).all()
+        }
 
         templates = []
         palettes = ("rose", "amber", "violet", "emerald", "blue")
         for category_slug, title_rows in TEMPLATE_TITLES.items():
-            category = categories_by_slug[category_slug]
+            category_id = category_ids[category_slug]
             for index, (name_uz, name_ru, name_en) in enumerate(title_rows, start=1):
+                template_key = (category_id, name_uz, name_ru, name_en)
+                if template_key in existing_templates:
+                    continue
                 image_seed = f"joyful-dilnoma-{category_slug}-{index:02d}"
                 templates.append(
                     Template(
-                        category_id=category.id,
+                        category_id=category_id,
                         name_uz=name_uz,
                         name_ru=name_ru,
                         name_en=name_en,
@@ -297,14 +319,25 @@ def seed_data() -> None:
                     )
                 )
         session.add_all(templates)
+        added_templates = len(templates)
 
         quotes = []
         for category_slug, quote_rows in QUOTE_TEXT.items():
-            category = categories_by_slug[category_slug]
+            category_id = category_ids[category_slug]
             for relation, mood, text_uz, text_ru, text_en in quote_rows:
+                quote_key = (
+                    category_id,
+                    relation,
+                    mood,
+                    text_uz,
+                    text_ru,
+                    text_en,
+                )
+                if quote_key in existing_quotes:
+                    continue
                 quotes.append(
                     Quote(
-                        category_id=category.id,
+                        category_id=category_id,
                         relation=relation,
                         mood=mood,
                         text_uz=text_uz,
@@ -313,11 +346,17 @@ def seed_data() -> None:
                     )
                 )
         session.add_all(quotes)
+        added_quotes = len(quotes)
 
     print(
-        f"Seeded {len(CATEGORIES)} categories, "
-        f"{len(templates)} templates, and {len(quotes)} multilingual quotes."
+        f"Added {added_categories} categories, {added_templates} templates, "
+        f"and {added_quotes} multilingual quotes."
     )
+    return {
+        "categories": added_categories,
+        "templates": added_templates,
+        "quotes": added_quotes,
+    }
 
 
 if __name__ == "__main__":

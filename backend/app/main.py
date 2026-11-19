@@ -9,9 +9,11 @@ from sqlalchemy import inspect, select, text
 from app.auth import hash_password
 from app.database import Base, SessionLocal, engine
 from app import models  # noqa: F401 - registers models with Base.metadata
-from app.models import User
+from app.models import Category, Template, User
+from app.routers.admin import router as admin_router
 from app.routers.templates import router as templates_router
 from app.routers.users import router as users_router
+from seed_data import seed_data
 
 
 DEFAULT_ADMIN_EMAIL = "mr.quvonchbek0207@gmail.com"
@@ -65,11 +67,20 @@ def ensure_default_admin() -> None:
     print(f"Default admin account is ready: {email}")
 
 
+def seed_catalog_if_empty() -> None:
+    with SessionLocal() as session:
+        categories_exist = session.scalar(select(Category.id).limit(1)) is not None
+        templates_exist = session.scalar(select(Template.id).limit(1)) is not None
+    if not categories_exist or not templates_exist:
+        seed_data()
+
+
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     Base.metadata.create_all(bind=engine)
     ensure_user_admin_column()
     ensure_default_admin()
+    seed_catalog_if_empty()
     yield
 
 
@@ -85,6 +96,7 @@ app.add_middleware(
 
 app.include_router(users_router)
 app.include_router(templates_router)
+app.include_router(admin_router)
 
 
 @app.get("/api/health")

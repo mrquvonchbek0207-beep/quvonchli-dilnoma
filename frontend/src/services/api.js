@@ -4,10 +4,11 @@ export const TOKEN_STORAGE_KEY = 'joyful-dilnoma-token'
 const LOCAL_TEMPLATES_KEY = 'joyful-dilnoma-admin-templates'
 const LOCAL_QUOTES_KEY = 'joyful-dilnoma-admin-quotes'
 export const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000'
+  import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
   },

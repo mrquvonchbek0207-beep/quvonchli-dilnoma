@@ -41,9 +41,8 @@ function EnvelopeAnim({ card }) {
   const [showBurst, setShowBurst] = useState(false)
   const [shareFeedback, setShareFeedback] = useState('')
   const pageUrl = typeof window === 'undefined' ? '' : window.location.href
-  const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(
-    t('publicCard.telegramMessage'),
-  )}`
+  const telegramMessage = "💌 Siz uchun maxsus samimiy dilnoma yuborildi!\n✨ Konvertni ochib o'qish uchun havolaga bosing 👇";
+  const telegramUrl = "https://t.me/share/url?url=" + encodeURIComponent(pageUrl) + "&text=" + encodeURIComponent(telegramMessage);
 
   useEffect(() => {
     if (!showBurst) return undefined
